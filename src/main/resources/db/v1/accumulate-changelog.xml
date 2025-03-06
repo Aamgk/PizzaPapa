@@ -3,6 +3,11 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <include file="create-tables-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="create-table-users-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="create-table-categories-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="create-table-products.xml" relativeToChangelogFile="true"/>
+    <include file="create-table-orderitems-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="create-table-orders-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="create-table-roles-changelog.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
