@@ -9,4 +9,9 @@
     <changeSet id="1" author="Siilen Otgonbaatar">
         <tagDatabase tag="v1.0"/>
     </changeSet>
+
+    <include file="v2/accumulate-changelog.xml" relativeToChangelogFile="true"/>
+    <changeSet id="2" author="Siilen Otgonbaatar">
+        <tagDatabase tag="v2.0"/>
+    </changeSet>
 </databaseChangeLog>

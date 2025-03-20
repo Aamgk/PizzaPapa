@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.Optional;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -27,4 +30,11 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
+
+    public User(String s, String password, String email, Role role) {
+        this.userName = s;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+    }
 }
