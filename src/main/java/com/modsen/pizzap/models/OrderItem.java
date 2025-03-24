@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -25,4 +27,10 @@ public class OrderItem {
 
     @Column(nullable = false)
     private Integer quantity;
+
+    public OrderItem(Optional<Order> order, Optional<Product> product, Integer quantity) {
+        this.order = order.get();
+        this.product = product.get();
+        this.quantity = quantity;
+    }
 }

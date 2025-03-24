@@ -1,0 +1,10 @@
+package com.modsen.pizzap.repositories;
+
+import com.modsen.pizzap.models.Category;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface CategoryRepository extends JpaRepository<Category, Long> {
+    Boolean existsByCategoryName(String name);
+}
