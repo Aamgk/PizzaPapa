@@ -1,33 +1,31 @@
 package com.modsen.pizzap.controllers;
 
 import com.modsen.pizzap.dto.UserDTO;
-import com.modsen.pizzap.models.User;
 import com.modsen.pizzap.services.UserService;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
-@RequiredArgsConstructor
-@Data
 @RestController
-@RequestMapping("/v1/user")
+@RequestMapping("api/v1/user")
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/addUser")
-    public void addUser(@RequestBody UserDTO user) {
-        userService.createUser(user);
+    @PostMapping
+    public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO user) {
+        return userService.createUser(user);
     }
 
-    @PostMapping("/updateUser/{userId}")
-    public void updateUser(@PathVariable Long userId, @RequestBody UserDTO user) {
-        userService.updateUser(userId, user);
+    @PutMapping("/updateUser/{userId}")
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long userId, @RequestBody UserDTO user) {
+        return userService.updateUser(userId, user);
     }
 
     @GetMapping("/getUser/{userId}")
@@ -36,8 +34,15 @@ public class UserController {
     }
 
     @GetMapping("/getAllUsers")
-    public List<UserDTO> getAllUsers() {
-        return userService.getUsers();
+    public Page<UserDTO> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "true") boolean ascending
+    ) {
+        Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return userService.getUsers(pageable);
     }
 
     @DeleteMapping("/deleteUser/{userId}")

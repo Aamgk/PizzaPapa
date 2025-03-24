@@ -2,31 +2,30 @@ package com.modsen.pizzap.controllers;
 
 import com.modsen.pizzap.dto.ProductDTO;
 import com.modsen.pizzap.services.ProductService;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
-@RequiredArgsConstructor
-@Data
 @RestController
-@RequestMapping("v1/product")
+@RequestMapping("api/v1/product")
 public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @PostMapping("/addProduct")
-    public void addProduct(@RequestBody ProductDTO product) {
-        productService.createProduct(product);
+    @PostMapping
+    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO product) {
+        return productService.createProduct(product);
     }
 
-    @PostMapping("/updateProduct/{productId}")
-    public void updateProduct(@PathVariable Long productId, @RequestBody ProductDTO product) {
-        productService.updateProduct(productId, product);
+    @PutMapping("/updateProduct/{productId}")
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long productId, @RequestBody ProductDTO product) {
+        return productService.updateProduct(productId, product);
     }
 
     @GetMapping("/getProduct/{productId}")
@@ -35,8 +34,15 @@ public class ProductController {
     }
 
     @GetMapping("/getAllProducts")
-    public List<ProductDTO> getAllProducts() {
-        return productService.getProducts();
+    public Page<ProductDTO> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "price") String sortBy,
+            @RequestParam(defaultValue = "true") boolean ascending
+    ) {
+        Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return productService.getProducts(pageable);
     }
 
     @DeleteMapping("/deleteProduct/{productId}")

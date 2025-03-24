@@ -1,17 +1,18 @@
 package com.modsen.pizzap.services;
 
 import com.modsen.pizzap.dto.OrderDTO;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 public interface OrderService {
-    void createOrder(OrderDTO order);
+    ResponseEntity<OrderDTO> createOrder(OrderDTO order);
 
-    void updateOrder(Long orderId, OrderDTO order);
+    ResponseEntity<OrderDTO> updateOrder(Long orderId, OrderDTO order);
 
     void deleteOrder(Long orderId);
 
     OrderDTO getOrder(Long orderId);
 
-    List<OrderDTO> getOrders();
+    Page<OrderDTO> getOrders(Pageable pageable);
 }

@@ -1,17 +1,18 @@
 package com.modsen.pizzap.services;
 
 import com.modsen.pizzap.dto.ProductDTO;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 public interface ProductService {
-    void createProduct(ProductDTO product);
+    ResponseEntity<ProductDTO> createProduct(ProductDTO product);
 
-    void updateProduct(Long productId, ProductDTO product);
+    ResponseEntity<ProductDTO> updateProduct(Long productId, ProductDTO product);
 
     void deleteProduct(Long productId);
 
     ProductDTO getProduct(Long productId);
 
-    List<ProductDTO> getProducts();
+    Page<ProductDTO> getProducts(Pageable pageable);
 }

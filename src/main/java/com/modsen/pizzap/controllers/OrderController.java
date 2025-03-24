@@ -2,31 +2,30 @@ package com.modsen.pizzap.controllers;
 
 import com.modsen.pizzap.dto.OrderDTO;
 import com.modsen.pizzap.services.OrderService;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
-@RequiredArgsConstructor
-@Data
 @RestController
-@RequestMapping("v1/order")
+@RequestMapping("api/v1/order")
 public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping("/addOrder")
-    public void createOrder(@RequestBody OrderDTO order) {
-        orderService.createOrder(order);
+    @PostMapping
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO order) {
+        return orderService.createOrder(order);
     }
 
-    @PostMapping("/updateOrder/{orderId}")
-    public void updateOrder(@PathVariable Long orderId, @RequestBody OrderDTO order) {
-        orderService.updateOrder(orderId, order);
+    @PutMapping("/updateOrder/{orderId}")
+    public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long orderId, @RequestBody OrderDTO order) {
+        return orderService.updateOrder(orderId, order);
     }
 
     @GetMapping("/getOrder/{orderId}")
@@ -35,8 +34,15 @@ public class OrderController {
     }
 
     @GetMapping("/getAllOrders")
-    public List<OrderDTO> getOrders() {
-        return orderService.getOrders();
+    public Page<OrderDTO> getOrders(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "true") boolean ascending
+    ) {
+        Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return orderService.getOrders(pageable);
     }
 
     @DeleteMapping("/deleteOrder/{orderId}")

@@ -1,33 +1,31 @@
 package com.modsen.pizzap.controllers;
 
 import com.modsen.pizzap.dto.CategoryDTO;
-import com.modsen.pizzap.models.Category;
 import com.modsen.pizzap.services.CategoryService;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
-@RequiredArgsConstructor
-@Data
 @RestController
-@RequestMapping("v1/category")
+@RequestMapping("api/v1/category")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-    @PostMapping("/addCategory")
-    public void addCategory(@RequestBody CategoryDTO category) {
-        categoryService.createCategory(category);
+    @PostMapping
+    public ResponseEntity<CategoryDTO> addCategory(@RequestBody CategoryDTO category) {
+        return categoryService.createCategory(category);
     }
 
-    @PostMapping("/updateCategory/{categoryId}")
-    public void updateCategory(@PathVariable Long categoryId, @RequestBody CategoryDTO category) {
-        categoryService.updateCategory(categoryId, category);
+    @PutMapping("/updateCategory/{categoryId}")
+    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long categoryId, @RequestBody CategoryDTO category) {
+        return categoryService.updateCategory(categoryId, category);
     }
 
     @GetMapping("/getCategory/{categoryId}")
@@ -36,8 +34,15 @@ public class CategoryController {
     }
 
     @GetMapping("/getAllCategories")
-    public List<CategoryDTO> getAllCategories(){
-        return categoryService.getAllCategories();
+    public Page<CategoryDTO> getAllCategories(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "categoryName") String sortBy,
+            @RequestParam(defaultValue = "true") boolean ascending
+    ){
+        Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return categoryService.getAllCategories(pageable);
     }
 
     @DeleteMapping("/deleteCategory/{categoryId}")

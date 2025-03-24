@@ -1,18 +1,18 @@
 package com.modsen.pizzap.services;
 
 import com.modsen.pizzap.dto.CategoryDTO;
-import com.modsen.pizzap.models.Category;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 public interface CategoryService {
-    void createCategory(CategoryDTO category);
+    ResponseEntity<CategoryDTO> createCategory(CategoryDTO category);
 
-    void updateCategory(Long categoryId, CategoryDTO category);
+    ResponseEntity<CategoryDTO> updateCategory(Long categoryId, CategoryDTO category);
 
     void deleteCategory(Long categoryId);
 
-    List<CategoryDTO> getAllCategories();
+    Page<CategoryDTO> getAllCategories(Pageable pageable);
 
     CategoryDTO getCategoryById(Long categoryId);
 }
