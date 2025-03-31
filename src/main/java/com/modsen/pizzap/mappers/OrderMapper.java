@@ -35,7 +35,7 @@ public class OrderMapper implements Function<Order, OrderDTO> {
     }
 
     public Order orderDTOtoEntity(OrderDTO orderDTO) {
-        User user = userRepository.findById(orderDTO.userId()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = new User();
         List<OrderItem> orderItem = new ArrayList<>();
         return new Order(
                 user,

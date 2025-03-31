@@ -11,6 +11,7 @@ import com.modsen.pizzap.models.OrderStatus;
 import com.modsen.pizzap.repositories.OrderItemRepository;
 import com.modsen.pizzap.repositories.OrderRepository;
 import com.modsen.pizzap.repositories.ProductRepository;
+import com.modsen.pizzap.repositories.UserRepository;
 import com.modsen.pizzap.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,9 +27,10 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final OrderMapper orderMapper;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public ResponseEntity<OrderDTO> createOrder(OrderDTO order) {
+    public OrderDTO createOrder(OrderDTO order) {
         Order newOrder = orderMapper.orderDTOtoEntity(order);
         newOrder.setStatus(OrderStatus.PENDING);
         orderRepository.save(newOrder);
@@ -36,26 +38,22 @@ public class OrderServiceImpl implements OrderService {
         for(OrderItemDTO orderItem : order.orderItems()) {
             OrderItem orderItem1 = new OrderItem();
             orderItem1.setOrder(newOrder);
-            orderItem1.setProduct(productRepository.findById(orderItem.productId()).orElseThrow(() -> new RuntimeException("Product not found")));
+            orderItem1.setProduct(productRepository.findById(orderItem.productId()).orElseThrow(() -> new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND_MESSAGE, "Product", orderItem.productId()))));
             orderItem1.setQuantity(orderItem.quantity());
             orderItemRepository.save(orderItem1);
         }
-        return new ResponseEntity<>(
-                HttpStatus.CREATED
-        );
+        return orderMapper.apply(newOrder);
     }
 
     @Override
-    public ResponseEntity<OrderDTO> updateOrder(Long orderId, OrderDTO order) {
+    public OrderDTO updateOrder(Long orderId, OrderDTO order) {
         Order updatedOrder = orderMapper.orderDTOtoEntity(order);
+        updatedOrder.setUser(userRepository.findById(order.userId()).orElseThrow(() -> new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND_MESSAGE, "User", order.userId()))));
         Order existingOrder = findOrderById(orderId);
         existingOrder.setOrderItems(updatedOrder.getOrderItems());
         existingOrder.setUser(updatedOrder.getUser());
         existingOrder.setStatus(updatedOrder.getStatus());
-        orderRepository.save(existingOrder);
-        return new ResponseEntity<>(
-                HttpStatus.OK
-        );
+        return orderMapper.apply(orderRepository.save(existingOrder));
     }
 
     @Override

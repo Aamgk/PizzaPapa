@@ -8,16 +8,12 @@
     <!-- Insert data into Roles table -->
     <changeSet id="1" author="Siilen Otgonbaatar">
         <insert tableName="roles">
-            <column name="role_name" value="USER"/>
+            <column name="role_name" value="CUSTOMER"/>
             <column name="id" value="1"/>
         </insert>
         <insert tableName="roles">
-            <column name="role_name" value="CUSTOMER"/>
-            <column name="id" value="2"/>
-        </insert>
-        <insert tableName="roles">
             <column name="role_name" value="ADMIN"/>
-            <column name="id" value="3"/>
+            <column name="id" value="2"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

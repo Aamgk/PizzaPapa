@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,21 +19,25 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO order) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderDTO createOrder(@RequestBody OrderDTO order) {
         return orderService.createOrder(order);
     }
 
-    @PutMapping("/updateOrder/{orderId}")
-    public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long orderId, @RequestBody OrderDTO order) {
+    @PutMapping("/{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    public OrderDTO updateOrder(@PathVariable Long orderId, @RequestBody OrderDTO order) {
         return orderService.updateOrder(orderId, order);
     }
 
-    @GetMapping("/getOrder/{orderId}")
+    @GetMapping("/{orderId}")
+    @ResponseStatus(HttpStatus.OK)
     public OrderDTO getOrder(@PathVariable Long orderId) {
         return orderService.getOrder(orderId);
     }
 
-    @GetMapping("/getAllOrders")
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public Page<OrderDTO> getOrders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
@@ -45,7 +49,8 @@ public class OrderController {
         return orderService.getOrders(pageable);
     }
 
-    @DeleteMapping("/deleteOrder/{orderId}")
+    @DeleteMapping("/{orderId}")
+    @ResponseStatus(HttpStatus.OK)
     public void deleteOrder(@PathVariable Long orderId) {
         orderService.deleteOrder(orderId);
     }

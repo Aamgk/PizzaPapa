@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,21 +20,25 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> addCategory(@RequestBody CategoryDTO category) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public CategoryDTO addCategory(@RequestBody CategoryDTO category) {
         return categoryService.createCategory(category);
     }
 
-    @PutMapping("/updateCategory/{categoryId}")
-    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long categoryId, @RequestBody CategoryDTO category) {
+    @PutMapping("/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CategoryDTO updateCategory(@PathVariable Long categoryId, @RequestBody CategoryDTO category) {
         return categoryService.updateCategory(categoryId, category);
     }
 
-    @GetMapping("/getCategory/{categoryId}")
+    @GetMapping("/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
     public CategoryDTO getCategoryById(@PathVariable Long categoryId){
         return categoryService.getCategoryById(categoryId);
     }
 
-    @GetMapping("/getAllCategories")
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public Page<CategoryDTO> getAllCategories(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
@@ -45,7 +50,8 @@ public class CategoryController {
         return categoryService.getAllCategories(pageable);
     }
 
-    @DeleteMapping("/deleteCategory/{categoryId}")
+    @DeleteMapping("/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
     public void deleteCategory(@PathVariable Long categoryId){
         categoryService.deleteCategory(categoryId);
     }

@@ -14,4 +14,9 @@
     <changeSet id="2" author="Siilen Otgonbaatar">
         <tagDatabase tag="v2.0"/>
     </changeSet>
+
+    <include file="v3/accumulate-changelog.xml" relativeToChangelogFile="true"/>
+    <changeSet id="3" author="Siilen Otgonbaatar">
+        <tagDatabase tag="v2.0"/>
+    </changeSet>
 </databaseChangeLog>

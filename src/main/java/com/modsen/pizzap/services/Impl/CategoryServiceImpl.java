@@ -11,8 +11,6 @@ import com.modsen.pizzap.services.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,24 +20,18 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
 
     @Override
-    public ResponseEntity<CategoryDTO> createCategory(CategoryDTO categoryDto) {
+    public CategoryDTO createCategory(CategoryDTO categoryDto) {
         checkCategoryExistence(categoryDto.categoryName());
 
         Category category = categoryMapper.categoryDTOToCategory(categoryDto);
-        categoryRepository.save(category);
-        return new ResponseEntity<>(
-                HttpStatus.CREATED
-        );
+        return categoryMapper.apply(categoryRepository.save(category));
     }
 
     @Override
-    public ResponseEntity<CategoryDTO> updateCategory(Long categoryId, CategoryDTO category) {
+    public CategoryDTO updateCategory(Long categoryId, CategoryDTO category) {
         Category existingCategory = findCategoryByIdOrThrow(categoryId);
         existingCategory.setCategoryName(category.categoryName());
-        categoryRepository.save(existingCategory);
-        return new ResponseEntity<>(
-                HttpStatus.OK
-        );
+        return categoryMapper.apply(categoryRepository.save(existingCategory));
     }
 
     @Override

@@ -10,14 +10,14 @@
         <insert tableName="users">
             <column name="user_name" value="John Doe"/>
             <column name="email" value="john.doe@example.com"/>
-            <column name="password" value="password1"/>
+            <column name="password" value="$2a$12$erWtYqIPZ0jyTpnk8fzFVeMSdJ94MXLxLp7rqdXDgYLY0xV5SVZ9S"/>
             <column name="role_id" value="1"/>
         </insert>
         <insert tableName="users">
             <column name="user_name" value="Jane Doe"/>
             <column name="email" value="jane.smith@example.com"/>
-            <column name="password" value="password2"/>
-            <column name="role_id" value="3"/>
+            <column name="password" value="$2a$12$J2U8FrZx5Wy2ESUe35nI6.2dHQrg8V4j/N5DBWkqhy3gTLccBU3te"/>
+            <column name="role_id" value="2"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

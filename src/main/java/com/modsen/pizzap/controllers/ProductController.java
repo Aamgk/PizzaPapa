@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,21 +20,25 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO product) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProductDTO addProduct(@RequestBody ProductDTO product) {
         return productService.createProduct(product);
     }
 
-    @PutMapping("/updateProduct/{productId}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long productId, @RequestBody ProductDTO product) {
+    @PutMapping("/{productId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ProductDTO updateProduct(@PathVariable Long productId, @RequestBody ProductDTO product) {
         return productService.updateProduct(productId, product);
     }
 
-    @GetMapping("/getProduct/{productId}")
+    @GetMapping("/{productId}")
+    @ResponseStatus(HttpStatus.OK)
     public ProductDTO getProduct(@PathVariable Long productId) {
         return productService.getProduct(productId);
     }
 
-    @GetMapping("/getAllProducts")
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public Page<ProductDTO> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
@@ -45,7 +50,8 @@ public class ProductController {
         return productService.getProducts(pageable);
     }
 
-    @DeleteMapping("/deleteProduct/{productId}")
+    @DeleteMapping("/{productId}")
+    @ResponseStatus(HttpStatus.OK)
     public void deleteProduct(@PathVariable Long productId) {
         productService.deleteProduct(productId);
     }
