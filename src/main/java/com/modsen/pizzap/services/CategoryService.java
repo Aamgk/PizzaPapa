@@ -6,9 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 public interface CategoryService {
-    ResponseEntity<CategoryDTO> createCategory(CategoryDTO category);
+    CategoryDTO createCategory(CategoryDTO category);
 
-    ResponseEntity<CategoryDTO> updateCategory(Long categoryId, CategoryDTO category);
+    CategoryDTO updateCategory(Long categoryId, CategoryDTO category);
 
     void deleteCategory(Long categoryId);
 

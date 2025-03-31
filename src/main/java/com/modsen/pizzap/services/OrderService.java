@@ -6,9 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 public interface OrderService {
-    ResponseEntity<OrderDTO> createOrder(OrderDTO order);
+    OrderDTO createOrder(OrderDTO order);
 
-    ResponseEntity<OrderDTO> updateOrder(Long orderId, OrderDTO order);
+    OrderDTO updateOrder(Long orderId, OrderDTO order);
 
     void deleteOrder(Long orderId);
 

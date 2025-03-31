@@ -6,9 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 public interface ProductService {
-    ResponseEntity<ProductDTO> createProduct(ProductDTO product);
+    ProductDTO createProduct(ProductDTO product);
 
-    ResponseEntity<ProductDTO> updateProduct(Long productId, ProductDTO product);
+    ProductDTO updateProduct(Long productId, ProductDTO product);
 
     void deleteProduct(Long productId);
 

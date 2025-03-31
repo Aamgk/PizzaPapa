@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,32 +24,27 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public ResponseEntity<UserDTO> createUser(UserDTO user) {
+    public UserDTO createUser(UserDTO user) {
         checkUserExistence(user.email());
 
         User newUser = userMapper.userDTOToUser(user);
         newUser.setRole(findUserRoleByIdOrThrow(user.roleId()));
-        userRepository.save(newUser);
-        return new ResponseEntity<>(
-                HttpStatus.CREATED
-        );
+        return userMapper.apply(userRepository.save(newUser));
     }
 
     @Override
-    public ResponseEntity<UserDTO> updateUser(Long userId, UserDTO user) {
+    public UserDTO updateUser(Long userId, UserDTO user) {
         User updatedUser = userMapper.userDTOToUser(user);
         updatedUser.setRole(findUserRoleByIdOrThrow(user.roleId()));
         User oldUser = findUserByIdOrThrow(userId);
         oldUser.setUserName(updatedUser.getUserName());
         oldUser.setRole(updatedUser.getRole());
         oldUser.setEmail(updatedUser.getEmail());
-        oldUser.setPassword(updatedUser.getPassword());
-        userRepository.save(oldUser);
-        return new ResponseEntity<>(
-                HttpStatus.OK
-        );
+        oldUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        return userMapper.apply(userRepository.save(oldUser));
     }
 
     @Override

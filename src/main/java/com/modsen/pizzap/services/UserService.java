@@ -6,9 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService {
-    ResponseEntity<UserDTO> createUser(UserDTO user);
+    UserDTO createUser(UserDTO user);
 
-    ResponseEntity<UserDTO> updateUser(Long userId, UserDTO user);
+    UserDTO updateUser(Long userId, UserDTO user);
 
     void deleteUser(Long userId);
 

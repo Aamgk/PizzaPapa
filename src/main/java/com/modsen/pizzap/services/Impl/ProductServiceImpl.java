@@ -12,8 +12,6 @@ import com.modsen.pizzap.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,29 +22,23 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public ResponseEntity<ProductDTO> createProduct(ProductDTO productDTO) {
+    public ProductDTO createProduct(ProductDTO productDTO) {
         checkProductExistence(productDTO.productName());
         Product product = productMapper.productDTOToProduct(productDTO);
-        product.setCategory(categoryRepository.findById(productDTO.categoryId()).orElseThrow(() -> new RuntimeException("Category not found")));
-        productRepository.save(product);
-        return new ResponseEntity<>(
-                HttpStatus.CREATED
-        );
+        product.setCategory(categoryRepository.findById(productDTO.categoryId()).orElseThrow(() -> new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND_MESSAGE, "Category", productDTO.categoryId()))));
+        return productMapper.apply(productRepository.save(product));
     }
 
     @Override
-    public ResponseEntity<ProductDTO> updateProduct(Long productId, ProductDTO product) {
+    public ProductDTO updateProduct(Long productId, ProductDTO product) {
         Product updatedProduct = productMapper.productDTOToProduct(product);
-        updatedProduct.setCategory(categoryRepository.findById(product.categoryId()).orElseThrow(() -> new RuntimeException("Category not found")));
+        updatedProduct.setCategory(categoryRepository.findById(product.categoryId()).orElseThrow(() -> new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND_MESSAGE, "Category", product.categoryId()))));
         Product oldProduct = findProductByIdOrThrow(productId);
         oldProduct.setProductName(updatedProduct.getProductName());
         oldProduct.setDescription(updatedProduct.getDescription());
         oldProduct.setPrice(updatedProduct.getPrice());
         oldProduct.setCategory(updatedProduct.getCategory());
-        productRepository.save(oldProduct);
-        return new ResponseEntity<>(
-                HttpStatus.OK
-        );
+        return productMapper.apply(productRepository.save(oldProduct));
     }
 
     @Override
@@ -73,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
 
     private void checkProductExistence(String productName){
         if(productRepository.existsByProductName(productName)){
-            throw new DuplicateResourceException(String.format(ErrorMessages.DUPLICATE_RESOURCE_MESSAGE, "Product", "id"));
+            throw new DuplicateResourceException(String.format(ErrorMessages.DUPLICATE_RESOURCE_MESSAGE, "Product", "name"));
         }
     }
 }
